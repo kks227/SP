@@ -12,6 +12,7 @@ class Player(Sprite):
 		# set member variables
 		self.initGenerals(x, y)
 		self.initProperties()
+		self.initDependencies()
 
 	def initGenerals(self, x, y):
 		super(Player, self).initGenerals(x, y)
@@ -28,7 +29,7 @@ class Player(Sprite):
 
 
 	def draw(self):
-		ImagePack.drawBottomCenter(self.rect, self.prefix, self.step, 4)
+		ImagePack.drawBottomCenter(self.rect, self.imgList[''], self.step, 4)
 
 
 
@@ -104,3 +105,4 @@ class Player_Superbounce(Player):
 		self.gravity = 0.3 # accelerating vertical speed by gravity
 		self.jumpPower = 10
 		self.prefix = 'p_superbounce'
+		self.imgName.append('')

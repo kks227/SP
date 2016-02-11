@@ -7,7 +7,7 @@ from pygame.locals import *
 
 # terrain: superclass
 class ImagePack:
-	imgs = defaultdict(list)
+	img = defaultdict(list)
 	screen = None
 	commonPath = "Resources/Images/"
 
@@ -20,7 +20,7 @@ class ImagePack:
 		else:
 			for i in range(cnt):
 				imgList.append(pygame.image.load(ImagePack.commonPath + fileName + str(i) + ".png"))
-		ImagePack.imgs[imgName] = imgList
+		ImagePack.img[imgName] = imgList
 
 	# set screen variable statically
 	@staticmethod
@@ -28,17 +28,14 @@ class ImagePack:
 		ImagePack.screen = screen
 
 	@staticmethod
-	def draw(rect, imgName, frame=0, fspeed=0):
-		imgList = ImagePack.imgs[imgName]
+	def draw(rect, imgList, frame=0, fspeed=0):
 		if fspeed > 0:
 			frame = (frame + fspeed - 1) / fspeed
 		frame %= len(imgList)
 		ImagePack.screen.canvas.blit(imgList[frame], rect.topleft)
 
 	@staticmethod
-	def drawBottomCenter(rect, imgName, frame=0, fspeed=0):
-		imgList = ImagePack.imgs[imgName]
-
+	def drawBottomCenter(rect, imgList, frame=0, fspeed=0):
 		drawRect = imgList[0].get_rect()
 		drawRect.bottom = rect.bottom
 		drawRect.centerx = rect.centerx

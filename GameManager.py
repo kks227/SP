@@ -20,7 +20,24 @@ class GameManager:
 		# global variables
 		self.keys = [False, False] # key input check
 
+
+
 		# image loading
+		ImagePack.getFiles('__dummy', 'Etc/__dummy')
+
+		ImagePack.getFiles('p_superbounce', 'Players/superbounce', 2)
+
+		ImagePack.getFiles('e_minislime', 'Enemies/minislime', 9)
+
+		ImagePack.getFiles('t___dummy', 'Terrains/__dummy')
+		ImagePack.getFiles('t_solid0', 'Terrains/solid0')
+		ImagePack.getFiles('t_foothold0', 'Terrains/foothold0')
+
+		ImagePack.setScreen(self.screen)
+
+
+
+		# add objects
 		self.player = Player_Superbounce(70, 100)
 
 		self.terrains = []
@@ -33,18 +50,6 @@ class GameManager:
 
 		self.enemies = []
 		self.enemies.append(Enemy_Minislime(400, 100))
-
-		ImagePack.getFiles('__dummy', 'Etc/__dummy')
-
-		ImagePack.getFiles('p_superbounce', 'Players/superbounce', 2)
-
-		ImagePack.getFiles('e_minislime', 'Enemies/minislime')
-
-		ImagePack.getFiles('t___dummy', 'Terrains/__dummy')
-		ImagePack.getFiles('t_solid0', 'Terrains/solid0')
-		ImagePack.getFiles('t_foothold0', 'Terrains/foothold0')
-
-		ImagePack.setScreen(self.screen)
 
 
 

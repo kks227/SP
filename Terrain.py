@@ -9,7 +9,7 @@ from pygame.locals import *
 # terrain: superclass
 class Terrain:
 	def __init__(self, x, y, imgName='t___dummy'):
-		self.imgName = imgName
+		self.imgList = ImagePack.img[imgName]
 		self.prevRect = Rect((x, y), (48, 48))
 		self.rect = self.prevRect
 		# set property member variables
@@ -22,7 +22,7 @@ class Terrain:
 
 
 	def draw(self):
-		ImagePack.draw(self.rect, self.imgName)
+		ImagePack.draw(self.rect, self.imgList)
 
 
 

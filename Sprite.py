@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 from Tool import *
 from ImagePack import *
 
@@ -24,6 +26,7 @@ class Sprite(object):
 		# set member variables
 		self.initGenerals(x, y)
 		self.initProperties()
+		self.initDependencies()
 
 	def initGenerals(self, x, y):
 		self.movingXspeed = 0 # 0: not moving, 1: to right, -1: to left
@@ -38,15 +41,24 @@ class Sprite(object):
 		self.speed = 0
 		self.gravity = 0 # accelerating vertical speed by gravity
 		self.jumpPower = 0
-		self.prefix = '' # common perfix of image names
+		self.prefix = '__dummy' # common perfix of image names
+		self.imgName = []
+		self.imgList = defaultdict(list)
 
 	def initProperties(self):
 		do_nothing = 0
 
+	def initDependencies(self):
+		for key in self.imgName:
+			if key == '':
+				self.imgList[key] = ImagePack.img[self.prefix]
+			else:
+				self.imgList[key] = ImagePack.img[self.prefix + '_' + key]
+
 
 
 	def draw(self):
-		ImagePack.draw(self.rect, self.prefix)
+		ImagePack.draw(self.rect, self.imgList[''])
 
 
 

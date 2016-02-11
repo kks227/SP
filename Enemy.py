@@ -14,6 +14,7 @@ class Enemy(Sprite):
 		# set member variables
 		self.initGenerals(x, y)
 		self.initProperties()
+		self.initDependencies()
 
 	def initGenerals(self, x, y):
 		super(Enemy, self).initGenerals(x, y)
@@ -24,6 +25,7 @@ class Enemy(Sprite):
 		self.speed = 2
 		self.gravity = 0.3 # accelerating vertical speed by gravity
 		self.jumpPower = 5
+		self.imgFrame = 2
 
 	def initProperties(self):
 		self.prefix = '__dummy'
@@ -31,7 +33,7 @@ class Enemy(Sprite):
 
 
 	def draw(self):
-		ImagePack.drawBottomCenter(self.rect, self.prefix, self.step, 2)
+		ImagePack.drawBottomCenter(self.rect, self.imgList[''], self.step, self.imgFrame)
 
 
 
@@ -67,4 +69,7 @@ class Enemy(Sprite):
 # minislime:
 class Enemy_Minislime(Enemy):
 	def initProperties(self):
+		self.speed = 1
 		self.prefix = 'e_minislime'
+		self.imgName.append('')
+		self.imgFrame = 10
