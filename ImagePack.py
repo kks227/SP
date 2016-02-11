@@ -13,10 +13,13 @@ class ImagePack:
 
 	# get a list of filenames, then make a list of image and store it statically
 	@staticmethod
-	def getFiles(imgName, subPath, fileNames):
+	def getFiles(imgName, fileName, cnt=0):
 		imgList = []
-		for fname in fileNames:
-			imgList.append(pygame.image.load(ImagePack.commonPath + subPath + fname + ".png"))
+		if cnt == 0:
+			imgList.append(pygame.image.load(ImagePack.commonPath + fileName + ".png"))
+		else:
+			for i in range(cnt):
+				imgList.append(pygame.image.load(ImagePack.commonPath + fileName + str(i) + ".png"))
 		ImagePack.imgs[imgName] = imgList
 
 	# set screen variable statically
@@ -25,19 +28,22 @@ class ImagePack:
 		ImagePack.screen = screen
 
 	@staticmethod
-	def draw(rect, imgList, frame=0, fspeed=0):
+	def draw(rect, imgName, frame=0, fspeed=0):
+		imgList = ImagePack.imgs[imgName]
 		if fspeed > 0:
 			frame = (frame + fspeed - 1) / fspeed
-		frame %= len(ImagePack.imgs[imgName])
-		ImagePack.screen.canvas.blit(ImagePack.imgs[imgName][frame], rect.topleft)
+		frame %= len(imgList)
+		ImagePack.screen.canvas.blit(imgList[frame], rect.topleft)
 
 	@staticmethod
-	def drawBottomCenter(rect, imgList, frame=0, fspeed=0):
-		drawRect = ImagePack.imgs[imgName][0].get_rect()
+	def drawBottomCenter(rect, imgName, frame=0, fspeed=0):
+		imgList = ImagePack.imgs[imgName]
+
+		drawRect = imgList[0].get_rect()
 		drawRect.bottom = rect.bottom
 		drawRect.centerx = rect.centerx
 
 		if fspeed > 0:
 			frame = (frame + fspeed - 1) / fspeed
-		frame %= len(ImagePack.imgs[imgName])
-		ImagePack.screen.canvas.blit(ImagePack.imgs[imgName][frame], drawRect.topleft)
+		frame %= len(imgList)
+		ImagePack.screen.canvas.blit(imgList[frame], drawRect.topleft)
