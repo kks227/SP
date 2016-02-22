@@ -1,7 +1,10 @@
+import random
+
 from Screen import *
 from Player import *
 from Enemy import *
 from Terrain import *
+from Attack import *
 from ImagePack import *
 
 import pygame
@@ -16,6 +19,7 @@ class GameManager:
 		self.screen = Screen(640, 480)
 		self.FPS = 60
 		self.fpsClock = pygame.time.Clock()
+		self.step = 0
 
 		# global variables
 		self.keys = [False, False] # key input check
@@ -24,6 +28,7 @@ class GameManager:
 
 		# image loading
 		ImagePack.getFiles('__dummy', 'Etc/__dummy')
+		ImagePack.getFiles('__rect', 'Etc/__rect')
 
 		ImagePack.getFiles('p_superbounce', 'Players/superbounce', 2)
 
@@ -49,11 +54,10 @@ class GameManager:
 			self.terrains.append(Terrain_Foothold(x, 300, 't_foothold0'))
 
 		self.enemies = []
-		self.enemies.append(Enemy_Minislime(400, 100))
+	#	self.enemies.append(Enemy_Minislime(400, 100))
 
-
-
-
+		self.attacksAlly = []
+		self.attacksEnemy = []
 
 
 
@@ -66,8 +70,11 @@ class GameManager:
 		for obj in self.terrains:
 			obj.draw()
 		# draw enemies
-		for ene in self.enemies:
-			ene.draw()
+		for enemy in self.enemies:
+			enemy.draw()
+		# draw attacks
+		for aa in self.attacksAlly:
+			aa.draw()
 
 		# draw updating
 		pygame.display.update()
@@ -81,14 +88,19 @@ class GameManager:
 		# preorder update functions
 		self.player.updatePreorder()
 
-		for ene in self.enemies:
-			ene.updatePreorder()
+		for enemy in self.enemies:
+			enemy.updatePreorder()
+
+		for atkA in self.attacksAlly:
+			atkA.updatePreorder()
+		for atkE in self.attacksEnemy:
+			atkE.updatePreorder()
 
 		# update functions
-		self.player.update()
+		self.player.update(self.attacksAlly, self.attacksEnemy)
 
-		for ene in self.enemies:
-			ene.update()
+		for enemy in self.enemies:
+			enemy.update(self.attacksAlly, self.attacksEnemy)
 
 		for obj in self.terrains:
 			obj.update()
@@ -100,8 +112,34 @@ class GameManager:
 				obj.horiCollision(ene)
 				obj.vertiCollision(ene)
 
+		# update attacks
+		for atkA in self.attacksAlly:
+			atkA.update()
+		for atkE in self.attacksEnemy:
+			atkE.update()
+
 		# postorder update functions
 		self.player.updatePostorder()
 
-		for ene in self.enemies:
-			ene.updatePostorder()
+		for enemy in self.enemies:
+			enemy.updatePostorder()
+
+		for atkA in self.attacksAlly:
+			atkA.updatePostorder()
+		for atkE in self.attacksEnemy:
+			atkE.updatePostorder()
+
+		self.enemies[:] = [enemy for enemy in self.enemies if not enemy.isExpired()]
+		self.attacksAlly[:] = [atkA for atkA in self.attacksAlly if not atkA.expire]
+		self.attacksEnemy[:] = [atkE for atkE in self.attacksEnemy if not atkE.expire]
+
+
+
+		if self.step % 60 == 0 and len(self.enemies) < 10:
+			self.enemies.append(Enemy_Minislime(random.randrange(200, 400), 100))
+
+
+
+		self.step += 1
+
+	#	print len(self.attacksAlly)

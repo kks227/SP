@@ -10,10 +10,10 @@ from pygame.locals import *
 class Terrain:
 	def __init__(self, x, y, imgName='t___dummy'):
 		self.imgList = ImagePack.img[imgName]
-		self.prevRect = Rect((x, y), (48, 48))
-		self.rect = self.prevRect
+		self.rect = Rect((x, y), (48, 48))
 		# set property member variables
 		self.initProperties()
+		self.prevRect = self.rect
 
 	def initProperties(self):
 		# up, down, left, right
@@ -39,12 +39,12 @@ class Terrain:
 			if self.block[0] and obj.status == statusEnum.AIR and obj.prevRect.bottom <= self.prevRect.top:
 				obj.status = statusEnum.GROUND
 				obj.rect.bottom = self.rect.top
-				obj.fallingYspeed = 0
+				obj.yspeed = 0
 				obj.collideTerrain[0] = self
 			# down
 			if self.block[1] and obj.prevRect.top >= self.prevRect.bottom:
 				obj.rect.top = self.rect.bottom
-				obj.fallingYspeed *= -1
+				obj.yspeed *= -1
 				obj.collideTerrain[1] = self
 
 	def horiCollision(self, obj):

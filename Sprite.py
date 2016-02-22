@@ -29,26 +29,27 @@ class Sprite(object):
 		self.initDependencies()
 
 	def initGenerals(self, x, y):
-		self.movingXspeed = 0 # 0: not moving, 1: to right, -1: to left
-		self.fallingYspeed = 0
+		self.xspeed = 0 # 0: not moving, 1: to right, -1: to left
+		self.yspeed = 0
 		self.collideTerrain = [None]*4
 		self.status = statusEnum.AIR
 		self.step = 0
-		self.prevRect = Rect((x, y), (32, 24))
-		self.rect = self.prevRect
+		self.rect = Rect((x, y), (32, 24))
 		# variables that have default values
 		# those can be set on initProperties functions
-		self.speed = 0
+		self.speed = 1
 		self.gravity = 0 # accelerating vertical speed by gravity
 		self.jumpPower = 0
 		self.prefix = '__dummy' # common perfix of image names
 		self.imgName = []
+		self.imgName.append('')
 		self.imgList = defaultdict(list)
 
 	def initProperties(self):
-		do_nothing = 0
+		pass
 
 	def initDependencies(self):
+		self.prevRect = self.rect
 		for key in self.imgName:
 			if key == '':
 				self.imgList[key] = ImagePack.img[self.prefix]
@@ -64,9 +65,9 @@ class Sprite(object):
 
 	def update(self):
 		# sprite horizontal moving
-		self.rect.x += self.movingXspeed * self.speed
+		self.rect.x += self.xspeed * self.speed
 		# sprite vertical moving by gravity
-		self.rect.y += self.fallingYspeed
+		self.rect.y += self.yspeed
 
 	def updatePreorder(self):
 		self.prevRect = self.rect.copy()
