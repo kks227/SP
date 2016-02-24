@@ -15,8 +15,7 @@ from pygame.locals import *
 #	LADDER: on ladder, rope, etc. doesn't fall.
 #	CLIMB: climbing terrains on sides.
 #	ACT
-#	DEAD
-statusEnum = enum('GROUND', 'JUMPED', 'AIR', 'LADDER', 'CLIMB', 'ACT', 'DEAD')
+statusEnum = enum('GROUND', 'JUMPED', 'AIR', 'LADDER', 'CLIMB', 'ACT')
 
 
 
@@ -35,6 +34,7 @@ class Sprite(object):
 		self.status = statusEnum.AIR
 		self.step = 0
 		self.rect = Rect((x, y), (32, 24))
+		self.xflip = False # False: leftward, True: rightward
 		# variables that have default values
 		# those can be set on initProperties functions
 		self.speed = 1

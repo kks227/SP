@@ -33,6 +33,7 @@ class GameManager:
 		ImagePack.getFiles('p_superbounce', 'Players/superbounce', 2)
 
 		ImagePack.getFiles('e_minislime', 'Enemies/minislime', 9)
+		ImagePack.getFiles('e_minislime_walk', 'Enemies/minislime_walk', 8)
 
 		ImagePack.getFiles('t___dummy', 'Terrains/__dummy')
 		ImagePack.getFiles('t_solid0', 'Terrains/solid0')
