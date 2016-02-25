@@ -34,6 +34,7 @@ class GameManager:
 
 		ImagePack.getFiles('e_minislime', 'Enemies/minislime', 9)
 		ImagePack.getFiles('e_minislime_walk', 'Enemies/minislime_walk', 8)
+		ImagePack.getFiles('e_minislime_die', 'Enemies/minislime_die', 6)
 
 		ImagePack.getFiles('t___dummy', 'Terrains/__dummy')
 		ImagePack.getFiles('t_solid0', 'Terrains/solid0')

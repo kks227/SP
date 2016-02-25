@@ -10,8 +10,6 @@ from pygame.locals import *
 
 # enemy: superclass
 class Enemy(Sprite):
-	deathFrame = 60
-
 	def __init__(self, x=0, y=0):
 		# set member variables
 		self.initGenerals(x, y)
@@ -23,13 +21,15 @@ class Enemy(Sprite):
 		self.moveStep = 0
 		self.rect = Rect((x, y), (32, 24))
 		self.dead = False
-		self.deathFrame = Enemy.deathFrame
+		self.expireStep = 60
 		self.imgName.append('walk')
+		self.imgName.append('die')
 		# default values
 		self.speed = 2
 		self.gravity = 0.3 # accelerating vertical speed by gravity
 		self.jumpPower = 5
-		self.imgFrame = 2
+		self.imgFrame = 10
+		self.deathFrame = 10
 
 	def initProperties(self):
 		self.prefix = '__dummy'
@@ -41,8 +41,8 @@ class Enemy(Sprite):
 			imgStr = 'walk' if self.xspeed != 0 else ''
 			ImagePack.drawBottomCenterFlip(self.rect, self.imgList[imgStr], self.xflip, False, self.step, self.imgFrame)
 		else:
-			alpha = 1.0 - 1.0 * (Enemy.deathFrame - self.deathFrame) / Enemy.deathFrame
-			ImagePack.drawBottomCenterAlphaFlip(self.rect, self.imgList[''], alpha, self.xflip, False, self.step, self.imgFrame)
+			alpha = 1.0 - 1.0 * self.step / self.expireStep
+			ImagePack.drawBottomCenterAlphaFlip(self.rect, self.imgList['die'], alpha, self.xflip, False, self.step, self.deathFrame)
 
 
 
@@ -73,8 +73,6 @@ class Enemy(Sprite):
 
 		if not self.dead:
 			self.updateAttacked(attacksAlly)
-		elif self.deathFrame > 0:
-			self.deathFrame -= 1
 
 	def updateAttacked(self, attacksAlly):
 		if not self.dead:
@@ -82,6 +80,7 @@ class Enemy(Sprite):
 				if self.rect.colliderect(aa.rect) and aa.setTarget(self):
 					self.dead = True
 					self.xspeed = 0
+					self.step = 0
 
 	def updatePostorder(self):
 		super(Enemy, self).updatePostorder()
@@ -92,7 +91,7 @@ class Enemy(Sprite):
 
 
 	def isExpired(self):
-		return self.dead and self.deathFrame <= 0
+		return self.dead and self.step >= self.expireStep
 
 
 
