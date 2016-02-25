@@ -102,7 +102,7 @@ class GameManager:
 		self.player.update(self.attacksAlly, self.attacksEnemy)
 
 		for enemy in self.enemies:
-			enemy.update(self.attacksAlly, self.attacksEnemy)
+			enemy.update(self.player, self.attacksAlly, self.attacksEnemy)
 
 		for obj in self.terrains:
 			obj.update()

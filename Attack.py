@@ -28,9 +28,11 @@ class Attack(Sprite):
 		self.remainFrame = self.ready
 		self.target = []
 		# default values
+		self.ATK = 1
 		self.imgFrame = 1 # if imgFrame=0, it doesn't draw
 		self.targetNum = target # maximum target
 		self.prefix = '__rect'
+		# default values that will be barely changed
 
 	def initProperties(self):
 		pass
