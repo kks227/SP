@@ -2,6 +2,7 @@ import math
 import random
 
 from Sprite import *
+from DamageText import *
 from ImagePack import *
 
 import pygame
@@ -54,13 +55,30 @@ class Enemy(Sprite):
 				ImagePack.drawBottomCenterFlip(self.rect, self.imgList[imgStr], self.xflip, False, self.step, self.imgFrame)
 			else:
 				ImagePack.drawBottomCenterFlip(self.rect, self.imgList['die'], self.xflip, False, 0, 1)
+			# draw health bar
+			# border
+			borderRect = Rect((0, self.rect.bottom+5), (52, 7))
+			borderRect.centerx = self.rect.centerx
+			pygame.draw.rect(ImagePack.screen.canvas, 0, borderRect)
+			# inner bar
+			bw = float(self.HP) / self.maxHP * 50
+			if bw > 0:
+				bgRect = borderRect.copy()
+				bgRect.x += 1
+				bgRect.w = bw
+				bgRect.y += 1
+				bgRect.h -= 2
+				coffset = float(self.HP) / self.maxHP * 255 # 255 * (1 - (float(self.HP)/self.maxHP)**2)
+				pygame.draw.rect(ImagePack.screen.canvas, (255-coffset, coffset, 0), bgRect)
+
+		# death: getting transparent
 		else:
 			alpha = 1.0 - 1.0 * self.step / self.expireStep
 			ImagePack.drawBottomCenterAlphaFlip(self.rect, self.imgList['die'], alpha, self.xflip, False, self.step, self.deathFrame)
 
 
 
-	def update(self, player, attacksAlly, attacksEnemy):
+	def update(self, player, attacksAlly, attacksEnemy, damageText):
 		super(Enemy, self).update()
 
 		# knockback status
@@ -74,9 +92,6 @@ class Enemy(Sprite):
 			else:
 				kbSign = -1 if self.xflip else 1
 				kbAbs = round(math.pow(0.813, self.step)*7.5)
-				if kbAbs < 0:
-					kbAbs = 0
-			#	print kbAbs, self.xspeed
 				self.rect.x += kbSign * kbAbs
 		# randomly choose directions
 		elif self.moveStep > 0:
@@ -101,9 +116,9 @@ class Enemy(Sprite):
 			pass
 
 		if not self.dead:
-			self.updateAttacked(attacksAlly)
+			self.updateAttacked(attacksAlly, damageText)
 
-	def updateAttacked(self, attacksAlly):
+	def updateAttacked(self, attacksAlly, damageText):
 		if self.dead:
 			return
 
@@ -111,6 +126,9 @@ class Enemy(Sprite):
 			if self.rect.colliderect(aa.rect) and aa.setTarget(self):
 				# reduce HP
 				self.HP -= aa.ATK
+				# make damage text
+				damageText.append(DamageText(self.rect.centerx, self.rect.y, aa.ATK))
+
 				# dead!!
 				if self.HP <= 0:
 					self.HP = 0

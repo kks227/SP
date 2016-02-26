@@ -5,6 +5,7 @@ from Player import *
 from Enemy import *
 from Terrain import *
 from Attack import *
+from DamageText import *
 from ImagePack import *
 
 import pygame
@@ -17,6 +18,7 @@ class GameManager:
 		# initial processing
 		pygame.init()
 		self.screen = Screen(640, 480)
+		ImagePack.setScreen(self.screen)
 		self.FPS = 60
 		self.fpsClock = pygame.time.Clock()
 		self.step = 0
@@ -30,6 +32,9 @@ class GameManager:
 		ImagePack.getFiles('__dummy', 'Etc/__dummy')
 		ImagePack.getFiles('__rect', 'Etc/__rect')
 
+		for i in range(10):
+			ImagePack.getFiles('text_'+str(i), 'Text/text_'+str(i))
+
 		ImagePack.getFiles('p_superbounce', 'Players/superbounce', 2)
 
 		ImagePack.getFiles('e_minislime', 'Enemies/minislime', 9)
@@ -40,7 +45,9 @@ class GameManager:
 		ImagePack.getFiles('t_solid0', 'Terrains/solid0')
 		ImagePack.getFiles('t_foothold0', 'Terrains/foothold0')
 
-		ImagePack.setScreen(self.screen)
+		
+
+		DamageText.loadImages()
 
 
 
@@ -60,6 +67,7 @@ class GameManager:
 
 		self.attacksAlly = []
 		self.attacksEnemy = []
+		self.damageText = []
 
 
 
@@ -77,6 +85,9 @@ class GameManager:
 		# draw attacks
 		for aa in self.attacksAlly:
 			aa.draw()
+		# draw damage texts
+		for dt in self.damageText:
+			dt.draw()
 
 		# draw updating
 		pygame.display.update()
@@ -99,10 +110,10 @@ class GameManager:
 			atkE.updatePreorder()
 
 		# update functions
-		self.player.update(self.attacksAlly, self.attacksEnemy)
+		self.player.update(self.attacksAlly, self.attacksEnemy, self.damageText)
 
 		for enemy in self.enemies:
-			enemy.update(self.player, self.attacksAlly, self.attacksEnemy)
+			enemy.update(self.player, self.attacksAlly, self.attacksEnemy, self.damageText)
 
 		for obj in self.terrains:
 			obj.update()
@@ -119,6 +130,8 @@ class GameManager:
 			atkA.update()
 		for atkE in self.attacksEnemy:
 			atkE.update()
+		for dt in self.damageText:
+			dt.update()
 
 		# postorder update functions
 		self.player.updatePostorder()
@@ -134,6 +147,7 @@ class GameManager:
 		self.enemies[:] = [enemy for enemy in self.enemies if not enemy.isExpired()]
 		self.attacksAlly[:] = [atkA for atkA in self.attacksAlly if not atkA.expire]
 		self.attacksEnemy[:] = [atkE for atkE in self.attacksEnemy if not atkE.expire]
+		self.damageText[:] = [dt for dt in self.damageText if dt.remain > 0]
 
 
 

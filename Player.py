@@ -34,7 +34,7 @@ class Player(Sprite):
 
 
 
-	def update(self, attacksAlly, attacksEnemy):
+	def update(self, attacksAlly, attacksEnemy, damageText):
 		super(Player, self).update()
 
 		self.updateKeyEvent(attacksAlly, attacksEnemy)

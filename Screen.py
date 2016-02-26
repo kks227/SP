@@ -9,4 +9,4 @@ class Screen:
 
 	def draw(self):
 		# fill background with default color
-		self.canvas.fill(0)
+		self.canvas.fill((55, 55, 55))
