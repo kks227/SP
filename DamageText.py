@@ -7,7 +7,7 @@ from pygame.locals import *
 
 class DamageText:
 	# general colors
-	colorEnemy = (193, 208, 227)
+	colorEnemy = (35, 56, 151)
 	colorAlly = (252, 182, 177)
 	colorRecovery = (181, 230, 29)
 
@@ -17,7 +17,7 @@ class DamageText:
 	tw = 18
 	tw1 = 14
 	th = 24
-	vib = 4
+	vib = 2
 
 
 
@@ -53,17 +53,15 @@ class DamageText:
 			x = self.x
 			y = self.y
 			flag = False
-			val = self.val
-			while True:
-				w = DamageText.tw1 if val%10 == 1 else DamageText.tw
+			val = str(self.val)
+			for c in val:
+				d = int(c)
+				w = DamageText.tw1 if d==1 else DamageText.tw
 				h = DamageText.th
-				ImagePack.drawAlpha(Rect((x, y), (w, h)), DamageText.img[val%10], alpha)
+				ImagePack.drawAlphaBlend(Rect((x, y), (w, h)), DamageText.img[d], alpha, self.color)
 				x += w - DamageText.vib
 				y += (-1 if flag else 1) * DamageText.vib
 				flag = not flag
-				val /= 10
-				if val <= 0:
-					break
 
 
 

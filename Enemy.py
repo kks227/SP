@@ -127,7 +127,7 @@ class Enemy(Sprite):
 				# reduce HP
 				self.HP -= aa.ATK
 				# make damage text
-				damageText.append(DamageText(self.rect.centerx, self.rect.y, aa.ATK))
+				damageText.append(DamageText(self.rect.centerx, self.rect.y, aa.ATK, DamageText.colorEnemy))
 
 				# dead!!
 				if self.HP <= 0:
@@ -160,7 +160,7 @@ class Enemy(Sprite):
 # minislime:
 class Enemy_Minislime(Enemy):
 	def initProperties(self):
-		self.HP = 5
+		self.HP = 50
 		self.speed = 1
 		self.prefix = 'e_minislime'
 		self.imgFrame = 10

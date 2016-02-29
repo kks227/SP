@@ -11,13 +11,13 @@ from pygame.locals import *
 
 # enemy: superclass
 class Attack(Sprite):
-	def __init__(self, parent, x, y, w=30, h=30, target=1, ready=1, act=1):
+	def __init__(self, parent, x, y, ATK=1, w=30, h=30, target=1, ready=1, act=1):
 		# set member variables
-		self.initGenerals(parent, x, y, w, h, target, ready, act)
+		self.initGenerals(parent, x, y, ATK, w, h, target, ready, act)
 		self.initProperties()
 		self.initDependencies()
 
-	def initGenerals(self, parent, x, y, w, h, target, ready, act):
+	def initGenerals(self, parent, x, y, ATK, w, h, target, ready, act):
 		super(Attack, self).initGenerals(x, y)
 		self.rect = Rect((x, y), (w, h))
 		self.parent = parent # whom makes this attack
@@ -28,7 +28,7 @@ class Attack(Sprite):
 		self.remainFrame = self.ready
 		self.target = []
 		# default values
-		self.ATK = 1
+		self.ATK = ATK
 		self.imgFrame = 1 # if imgFrame=0, it doesn't draw
 		self.targetNum = target # maximum target
 		self.prefix = '__rect'

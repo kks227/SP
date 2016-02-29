@@ -37,13 +37,15 @@ class ImagePack:
 			frame = (frame + fspeed - 1) / fspeed
 		frame %= len(imgList)
 
+		img = imgList[frame].copy()
+
 		# alpha
 		if alpha < 1:
-			img = imgList[frame].copy()
 			img.fill((255, 255, 255, int(alpha*255)), None, pygame.BLEND_RGBA_MULT)
-		else:
-			img = imgList[frame]
-
+		# blend
+		if blend is not None:
+		#	img.fill((0, 0, 0, 255), None, pygame.BLEND_RGBA_MULT)
+			img.fill(blend[0:3]+(0,), None, pygame.BLEND_RGBA_ADD)
 		# flip
 		img = pygame.transform.flip(img, xflip, yflip)
 		# scale
@@ -99,3 +101,14 @@ class ImagePack:
 		drawRect.bottom = rect.bottom
 		drawRect.centerx = rect.centerx
 		ImagePack.drawGeneral(drawRect, imgList, alpha, xflip, yflip, None, 0, None, frame, fspeed)
+
+	@staticmethod
+	def drawAlphaBlend(rect, imgList, alpha, blend, frame=0, fspeed=0):
+		ImagePack.drawGeneral(rect, imgList, alpha, False, False, None, 0, blend, frame, fspeed)
+
+	@staticmethod
+	def drawBottomCenterAlphaBlend(rect, imgList, alpha, blend, frame=0, fspeed=0):
+		drawRect = imgList[0].get_rect()
+		drawRect.bottom = rect.bottom
+		drawRect.centerx = rect.centerx
+		ImagePack.drawGeneral(drawRect, imgList, alpha, False, False, None, 0, blend, frame, fspeed)

@@ -1,3 +1,5 @@
+import random
+
 from Sprite import *
 from Attack import *
 from ImagePack import *
@@ -83,7 +85,7 @@ class Player(Sprite):
 						self.yspeed = -self.jumpPower
 				# attack
 				elif event.key == K_a:
-					attacksAlly.append(Attack_Normal(self, self.rect.x, self.rect.y))
+					attacksAlly.append(Attack_Normal(self, self.rect.x, self.rect.y, random.randrange(8, 13)))
 			# key up
 			if event.type == pygame.KEYUP:
 				# stop moving to left

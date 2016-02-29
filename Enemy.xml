@@ -1,0 +1,32 @@
+<enemy id="1" name="minislime">
+	<lv>1</lv>
+	<sort>spirit</sort>
+	<types>
+		<type>
+			<tid>6</tid>
+			<ratio>100</ratio>
+		</type>
+	</types>
+	<boss>0</boss>
+	<move>0</move>
+	<hp>5</hp>
+	<mp>0</mp>
+	<atk>1</atk>
+	<def>0</def>
+	<matk>0</matk>
+	<mdef>0</mdef>
+	<speed>1</speed>
+	<jump>0</jump>
+	<kb>0</kb>
+	<exp>3</exp>
+	<gold>5</gold>
+	<drops>
+		<drop>
+			<iid>1</iid>
+			<chance>80</chance>
+		</drop>
+	</drops>
+	<imgframe>10</imgframe>
+	<skills>
+	</skills>
+</enemy>
