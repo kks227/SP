@@ -18,7 +18,7 @@ class Attack(Sprite):
 		self.initDependencies()
 
 	def initGenerals(self, parent, x, y, ATK, w, h, target, ready, act):
-		super(Attack, self).initGenerals(x, y)
+		super(Attack, self).initGenerals(x, y, '__rect')
 		self.rect = Rect((x, y), (w, h))
 		self.parent = parent # whom makes this attack
 		self.ready = ready # ready frames
@@ -31,7 +31,6 @@ class Attack(Sprite):
 		self.ATK = ATK
 		self.imgFrame = 1 # if imgFrame=0, it doesn't draw
 		self.targetNum = target # maximum target
-		self.prefix = '__rect'
 		# default values that will be barely changed
 
 	def initProperties(self):
@@ -77,4 +76,4 @@ class Attack(Sprite):
 # one frame attack
 class Attack_Normal(Attack):
 	def initProperties(self):
-		self.prefix = '__rect'
+		self.name = '__rect'

@@ -11,14 +11,14 @@ from pygame.locals import *
 
 # player: superclass
 class Player(Sprite):
-	def __init__(self, x=0, y=0):
+	def __init__(self, x=0, y=0, name='__dummy'):
 		# set member variables
-		self.initGenerals(x, y)
+		self.initGenerals(x, y, name)
 		self.initProperties()
 		self.initDependencies()
 
-	def initGenerals(self, x, y):
-		super(Player, self).initGenerals(x, y)
+	def initGenerals(self, x, y, name='__dummy'):
+		super(Player, self).initGenerals(x, y, name)
 		self.rect = Rect((x, y), (32, 24))
 		self.actFrame = 0
 		# default values
@@ -26,8 +26,8 @@ class Player(Sprite):
 		self.gravity = 0.3 # accelerating vertical speed by gravity
 		self.jumpPower = 10
 
-	def initProperties(self):
-		self.prefix = '__dummy'
+	def initDependencies(self, name=''):
+		super(Player, self).initDependencies('p_')
 
 
 
@@ -85,7 +85,7 @@ class Player(Sprite):
 						self.yspeed = -self.jumpPower
 				# attack
 				elif event.key == K_a:
-					attacksAlly.append(Attack_Normal(self, self.rect.x, self.rect.y, random.randrange(8, 13)))
+					attacksAlly.append(Attack_Normal(self, self.rect.x, self.rect.y, random.randrange(1, 4)))
 			# key up
 			if event.type == pygame.KEYUP:
 				# stop moving to left
@@ -116,4 +116,4 @@ class Player_Superbounce(Player):
 		self.speed = 5
 		self.gravity = 0.3 # accelerating vertical speed by gravity
 		self.jumpPower = 10
-		self.prefix = 'p_superbounce'
+		self.name = 'superbounce'

@@ -21,13 +21,13 @@ statusEnum = enum('GROUND', 'JUMPED', 'AIR', 'LADDER', 'CLIMB', 'ACT')
 
 # sprite: superclass
 class Sprite(object):
-	def __init__(self, x=0, y=0):
+	def __init__(self, x=0, y=0, name='__dummy'):
 		# set member variables
-		self.initGenerals(x, y)
+		self.initGenerals(x, y, name)
 		self.initProperties()
 		self.initDependencies()
 
-	def initGenerals(self, x, y):
+	def initGenerals(self, x, y, name):
 		self.xspeed = 0 # 0: not moving, 1: to right, -1: to left
 		self.yspeed = 0
 		self.collideTerrain = [None]*4
@@ -40,7 +40,7 @@ class Sprite(object):
 		self.speed = 1
 		self.gravity = 0 # accelerating vertical speed by gravity
 		self.jumpPower = 0
-		self.prefix = '__dummy' # common perfix of image names
+		self.name = name # common perfix of image names
 		self.imgName = []
 		self.imgName.append('')
 		self.imgList = defaultdict(list)
@@ -48,13 +48,13 @@ class Sprite(object):
 	def initProperties(self):
 		pass
 
-	def initDependencies(self):
+	def initDependencies(self, prefix=''):
 		self.prevRect = self.rect
 		for key in self.imgName:
 			if key == '':
-				self.imgList[key] = ImagePack.img[self.prefix]
+				self.imgList[key] = ImagePack.img[prefix + self.name]
 			else:
-				self.imgList[key] = ImagePack.img[self.prefix + '_' + key]
+				self.imgList[key] = ImagePack.img[prefix + self.name + '_' + key]
 
 
 

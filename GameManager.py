@@ -1,5 +1,6 @@
 import random
-from xml.etree.ElementTree import Element, dump
+from collections import defaultdict
+from xml.etree.ElementTree import parse
 
 from Screen import *
 from Player import *
@@ -52,6 +53,13 @@ class GameManager:
 
 
 
+		# get enemy data from xml file
+		self.enemyStamp = []
+		self.enemyId = defaultdict(list)
+		self.initEnemyData()
+
+
+
 		# add objects
 		self.player = Player_Superbounce(70, 100)
 
@@ -69,6 +77,43 @@ class GameManager:
 		self.attacksAlly = []
 		self.attacksEnemy = []
 		self.damageText = []
+
+	def initEnemyData(self):
+		cnt = 0
+		# get root node
+		root = parse("Enemy.xml").getroot()
+		for tag in root.getiterator("enemy"):
+			# get name especially
+			name = tag.find("name").text
+			stamp = Enemy(0, 0, name)
+
+			# get data
+			stamp.eid = cnt
+			stamp.lv = int(tag.find("lv").text)
+			stamp.sort = tag.find("sort").text # species(machine, ghost, animal, ...)
+			#stamp.type
+			stamp.boss = bool(int(tag.find("boss").text))
+			stamp.move = int(tag.find("move").text)
+			stamp.maxHP = stamp.HP = int(tag.find("hp").text)
+			stamp.maxMP = stamp.MP = int(tag.find("mp").text)
+			stamp.ATK = int(tag.find("atk").text)
+			stamp.DEF = int(tag.find("def").text)
+			stamp.MATK = int(tag.find("matk").text)
+			stamp.MDEF = int(tag.find("mdef").text)
+			stamp.SPD = int(tag.find("speed").text)
+			stamp.JMP = int(tag.find("jump").text)
+			stamp.KB = int(tag.find("kb").text)
+			stamp.EXP = int(tag.find("exp").text)
+			stamp.GOLD = int(tag.find("gold").text)
+			#stamp.drop
+			stamp.imgFrame = int(tag.find("imgframe").text)
+			stamp.rect.size = (int(tag.find("width").text), int(tag.find("height").text))
+			#stamp.skill
+
+			# append to list and dict
+			self.enemyStamp.append(stamp)
+			self.enemyId[name] = cnt
+			cnt += 1
 
 
 
@@ -153,10 +198,18 @@ class GameManager:
 
 
 		if self.step % 60 == 0 and len(self.enemies) < 10:
-			self.enemies.append(Enemy_Minislime(random.randrange(200, 400), 100))
+			self.makeEnemy(0, random.randrange(200, 400), 100)
 
 
 
 		self.step += 1
 
-	#	print len(self.attacksAlly)
+	def makeEnemy(self, eid, x, y):
+		# check invalid eid value
+		if eid < 0 or eid >= len(self.enemyStamp):
+			print "invalid index"
+			return
+
+		newEnemy = self.enemyStamp[eid].stampCopy() #copy.copy(self.enemyStamp[eid])
+		newEnemy.rect.topleft = (x, y)
+		self.enemies.append(newEnemy)
