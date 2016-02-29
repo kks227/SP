@@ -22,7 +22,7 @@ class Terrain:
 
 
 	def draw(self):
-		ImagePack.draw(self.rect, self.imgList)
+		ImagePack.draw(DrawOption(self.rect, self.imgList))
 
 
 

@@ -58,7 +58,10 @@ class DamageText:
 				d = int(c)
 				w = DamageText.tw1 if d==1 else DamageText.tw
 				h = DamageText.th
-				ImagePack.drawAlphaBlend(Rect((x, y), (w, h)), DamageText.img[d], alpha, self.color)
+				do = DrawOption(Rect((x, y), (w, h)), DamageText.img[d])
+				do.alpha = alpha
+				do.blend = self.color
+				ImagePack.draw(do)
 				x += w - DamageText.vib
 				y += (-1 if flag else 1) * DamageText.vib
 				flag = not flag

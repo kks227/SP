@@ -32,7 +32,9 @@ class Player(Sprite):
 
 
 	def draw(self):
-		ImagePack.drawBottomCenter(self.rect, self.imgList[''], self.step, 4)
+		do = DrawOption(self.rect, self.imgList[''], self.step, 4)
+		do.bottomCenter = True
+		ImagePack.draw(do)
 
 
 

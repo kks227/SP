@@ -100,9 +100,15 @@ class Enemy(Sprite):
 		if not self.dead:
 			if not self.knockback:
 				imgStr = 'walk' if self.xspeed != 0 else ''
-				ImagePack.drawBottomCenterFlip(self.rect, self.imgList[imgStr], self.xflip, False, self.step, self.imgFrame)
+				do = DrawOption(self.rect, self.imgList[imgStr], self.step, self.imgFrame)
+				do.bottomCenter = True
+				do.xflip = self.xflip
+				ImagePack.draw(do)
 			else:
-				ImagePack.drawBottomCenterFlip(self.rect, self.imgList['die'], self.xflip, False, 0, 1)
+				do = DrawOption(self.rect, self.imgList['die'], 0, 1)
+				do.bottomCenter = True
+				do.xflip = self.xflip
+				ImagePack.draw(do)
 
 			# draw health bar if it is attacked
 			if self.hit:
@@ -123,8 +129,12 @@ class Enemy(Sprite):
 
 		# death: getting transparent
 		else:
-			alpha = 1.0 - 1.0 * self.step / self.expireStep
-			ImagePack.drawBottomCenterAlphaFlip(self.rect, self.imgList['die'], alpha, self.xflip, False, self.step, self.deathFrame)
+			do = DrawOption(self.rect, self.imgList['die'], self.step, self.deathFrame)
+			do.bottomCenter = True
+			do.loop = False
+			do.xflip = self.xflip
+			do.alpha = 1.0 - 1.0 * self.step / self.expireStep
+			ImagePack.draw(do)
 
 
 

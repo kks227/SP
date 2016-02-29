@@ -40,7 +40,7 @@ class Attack(Sprite):
 
 	def draw(self):
 		if self.imgFrame > 0:
-			ImagePack.draw(self.rect, self.imgList[''], self.step, self.imgFrame)
+			ImagePack.draw(DrawOption(self.rect, self.imgList[''], self.step, self.imgFrame))
 
 
 

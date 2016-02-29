@@ -31,84 +31,57 @@ class ImagePack:
 
 	# draw funntions
 	@staticmethod
-	def drawGeneral(rect, imgList, alpha, xflip, yflip, scale, rotate, blend, frame, fspeed):
+	def draw(option):
 		# animation speed
-		if fspeed > 0:
-			frame = (frame + fspeed - 1) / fspeed
-		frame %= len(imgList)
+		if option.fspeed > 0:
+			option.frame = (option.frame + option.fspeed - 1) / option.fspeed
+		if option.loop:
+			option.frame %= len(option.imgList)
+		else:
+			option.frame = min(option.frame, len(option.imgList)-1)
 
-		img = imgList[frame].copy()
+		img = option.imgList[option.frame].copy()
 
+		# draw bottom center
+		if option.bottomCenter:
+			newRect = option.imgList[0].get_rect()
+			newRect.bottom = option.rect.bottom
+			newRect.centerx = option.rect.centerx
+			option.rect = newRect
 		# alpha
-		if alpha < 1:
-			img.fill((255, 255, 255, int(alpha*255)), None, pygame.BLEND_RGBA_MULT)
+		if option.alpha < 1:
+			img.fill((255, 255, 255, int(option.alpha*255)), None, pygame.BLEND_RGBA_MULT)
 		# blend
-		if blend is not None:
+		if option.blend is not None:
 		#	img.fill((0, 0, 0, 255), None, pygame.BLEND_RGBA_MULT)
-			img.fill(blend[0:3]+(0,), None, pygame.BLEND_RGBA_ADD)
+			img.fill(option.blend[0:3]+(0,), None, pygame.BLEND_RGBA_ADD)
 		# flip
-		img = pygame.transform.flip(img, xflip, yflip)
+		if option.xflip or option.yflip:
+			img = pygame.transform.flip(img, option.xflip, option.yflip)
 		# scale
-		if scale is not None:
-			img = pygame.transform.scale(img, scale)
+		if option.scale is not None:
+			img = pygame.transform.scale(img, option.scale)
 		# rotate
-		if rotate != 0:
-			img = pygame.transform.rotate(img, rotate)
+		if option.rotate != 0:
+			img = pygame.transform.rotate(img, option.rotate)
 
 		# finally blit
-		ImagePack.screen.canvas.blit(img, rect.topleft)
+		ImagePack.screen.canvas.blit(img, option.rect.topleft)
 
-	@staticmethod
-	def draw(rect, imgList, frame=0, fspeed=0):
-		ImagePack.drawGeneral(rect, imgList, 1, False, False, None, 0, None, frame, fspeed)
 
-	@staticmethod
-	def drawBottomCenter(rect, imgList, frame=0, fspeed=0):
-		drawRect = imgList[0].get_rect()
-		drawRect.bottom = rect.bottom
-		drawRect.centerx = rect.centerx
-		ImagePack.drawGeneral(drawRect, imgList, 1, False, False, None, 0, None, frame, fspeed)
 
-	@staticmethod
-	def drawAlpha(rect, imgList, alpha, frame=0, fspeed=0):
-		ImagePack.drawGeneral(rect, imgList, alpha, False, False, None, 0, None, frame, fspeed)
-
-	@staticmethod
-	def drawBottomCenterAlpha(rect, imgList, alpha, frame=0, fspeed=0):
-		drawRect = imgList[0].get_rect()
-		drawRect.bottom = rect.bottom
-		drawRect.centerx = rect.centerx
-		ImagePack.drawGeneral(drawRect, imgList, alpha, False, False, None, 0, None, frame, fspeed)
-
-	@staticmethod
-	def drawFlip(rect, imgList, xflip, yflip, frame=0, fspeed=0):
-		ImagePack.drawGeneral(rect, imgList, 1, xflip, yflip, None, 0, None, frame, fspeed)
-
-	@staticmethod
-	def drawBottomCenterFlip(rect, imgList, xflip, yflip, frame=0, fspeed=0):
-		drawRect = imgList[0].get_rect()
-		drawRect.bottom = rect.bottom
-		drawRect.centerx = rect.centerx
-		ImagePack.drawGeneral(drawRect, imgList, 1, xflip, yflip, None, 0, None, frame, fspeed)
-
-	@staticmethod
-	def drawAlphaScale(rect, imgList, alpha, xflip, yflip, frame=0, fspeed=0):
-		ImagePack.drawGeneral(rect, imgList, alpha, xflip, yflip, None, 0, None, frame, fspeed)
-
-	@staticmethod
-	def drawBottomCenterAlphaFlip(rect, imgList, alpha, xflip, yflip, frame=0, fspeed=0):
-		drawRect = imgList[0].get_rect()
-		drawRect.bottom = rect.bottom
-		drawRect.centerx = rect.centerx
-		ImagePack.drawGeneral(drawRect, imgList, alpha, xflip, yflip, None, 0, None, frame, fspeed)
-
-	@staticmethod
-	def drawAlphaBlend(rect, imgList, alpha, blend, frame=0, fspeed=0):
-		ImagePack.drawGeneral(rect, imgList, alpha, False, False, None, 0, blend, frame, fspeed)
-
-	@staticmethod
-	def drawBottomCenterAlphaBlend(rect, imgList, alpha, blend, frame=0, fspeed=0):
-		drawRect = imgList[0].get_rect()
-		drawRect.bottom = rect.bottom
-		drawRect.centerx = rect.centerx
-		ImagePack.drawGeneral(drawRect, imgList, alpha, False, False, None, 0, blend, frame, fspeed)
+class DrawOption:
+	#(rect, imgList, alpha, xflip, yflip, scale, rotate, blend, frame, fspeed):
+	def __init__(self, rect, imgList, frame=0, fspeed=0):
+		self.rect = rect # essential value: coordinate
+		self.imgList = imgList # essential value: image list
+		self.bottomCenter = False # set balance as bottom center
+		self.loop = True # does it loop?
+		self.alpha = 1 # opacity(0: fully transparent, 1: fully opaque)
+		self.xflip = False
+		self.yflip = False
+		self.scale = None # scale Rect
+		self.rotate = 0
+		self.blend = None
+		self.frame = frame # current step value
+		self.fspeed = fspeed # animation speed
