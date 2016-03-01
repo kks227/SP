@@ -19,7 +19,7 @@ class Attack(Sprite):
 
 	def initGenerals(self, parent, x, y, ATK, w, h, target, ready, act):
 		super(Attack, self).initGenerals(x, y, '__rect')
-		self.rect = Rect((x, y), (w, h))
+		self.rect.size = (w, h)
 		self.parent = parent # whom makes this attack
 		self.ready = ready # ready frames
 		self.act = act # active frames

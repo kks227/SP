@@ -33,7 +33,10 @@ class Sprite(object):
 		self.collideTerrain = [None]*4
 		self.status = statusEnum.AIR
 		self.step = 0
-		self.rect = Rect((x, y), (32, 24))
+		# coordinate and mask(vulnerable area) size
+		self.x = float(x)
+		self.y = float(y)
+		self.rect = Rect((x, y), (32, 32))
 		self.xflip = False # False: leftward, True: rightward
 		# variables that have default values
 		# those can be set on initProperties functions
@@ -56,6 +59,9 @@ class Sprite(object):
 			else:
 				self.imgList[key] = ImagePack.img[prefix + self.name + '_' + key]
 
+	def setCoord(self, x, y):
+		self.rect.topleft = (x, y)
+
 
 
 	def draw(self):
@@ -75,3 +81,4 @@ class Sprite(object):
 
 	def updatePostorder(self):
 		self.step += 1
+		# renew rect's coordinate (float to int) (f*ck... why Rect doesn't apply float?)

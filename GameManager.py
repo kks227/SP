@@ -38,6 +38,7 @@ class GameManager:
 			ImagePack.getFiles('text_'+str(i), 'Text/text_'+str(i))
 
 		ImagePack.getFiles('p_superbounce', 'Players/superbounce', 2)
+		ImagePack.getFiles('p_superbounce_face', 'Players/superbounce_face', 2)
 
 		ImagePack.getFiles('e_minislime', 'Enemies/minislime', 9)
 		ImagePack.getFiles('e_minislime_walk', 'Enemies/minislime_walk', 8)
@@ -211,5 +212,5 @@ class GameManager:
 			return
 
 		newEnemy = self.enemyStamp[eid].stampCopy() #copy.copy(self.enemyStamp[eid])
-		newEnemy.rect.topleft = (x, y)
+		newEnemy.setCoord(x, y)
 		self.enemies.append(newEnemy)

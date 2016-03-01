@@ -22,7 +22,6 @@ class Enemy(Sprite):
 	def initGenerals(self, x, y, name):
 		super(Enemy, self).initGenerals(x, y, name)
 		# coordinate and mask(vulnerable area) size
-		self.rect = Rect((x, y), (32, 32)) # width, height default values
 
 		# general variables
 		self.moveStep = 0
@@ -101,12 +100,12 @@ class Enemy(Sprite):
 			if not self.knockback:
 				imgStr = 'walk' if self.xspeed != 0 else ''
 				do = DrawOption(self.rect, self.imgList[imgStr], self.step, self.imgFrame)
-				do.bottomCenter = True
+				do.pivot = 2
 				do.xflip = self.xflip
 				ImagePack.draw(do)
 			else:
 				do = DrawOption(self.rect, self.imgList['die'], 0, 1)
-				do.bottomCenter = True
+				do.pivot = 2
 				do.xflip = self.xflip
 				ImagePack.draw(do)
 
@@ -130,7 +129,7 @@ class Enemy(Sprite):
 		# death: getting transparent
 		else:
 			do = DrawOption(self.rect, self.imgList['die'], self.step, self.deathFrame)
-			do.bottomCenter = True
+			do.pivot = 2
 			do.loop = False
 			do.xflip = self.xflip
 			do.alpha = 1.0 - 1.0 * self.step / self.expireStep

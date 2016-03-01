@@ -1,4 +1,5 @@
 import random
+from collections import defaultdict
 
 from Sprite import *
 from Attack import *
@@ -19,8 +20,10 @@ class Player(Sprite):
 
 	def initGenerals(self, x, y, name='__dummy'):
 		super(Player, self).initGenerals(x, y, name)
-		self.rect = Rect((x, y), (32, 24))
 		self.actFrame = 0
+		self.imgName.append('face')
+		self.facePivot = defaultdict(list)
+		self.face = 0
 		# default values
 		self.speed = 5
 		self.gravity = 0.3 # accelerating vertical speed by gravity
@@ -28,12 +31,29 @@ class Player(Sprite):
 
 	def initDependencies(self, name=''):
 		super(Player, self).initDependencies('p_')
+		# set default face pivot tuples
+		for key in self.imgName:
+			if key not in self.facePivot:
+				self.facePivot[key] = (0, 0)
+		self.faceSize = self.imgList['face'][0].get_rect().size
 
 
 
 	def draw(self):
+		# draw body
 		do = DrawOption(self.rect, self.imgList[''], self.step, 4)
-		do.bottomCenter = True
+		do.pivot = 2
+		do.xflip = self.xflip
+		ImagePack.draw(do)
+
+		# draw face
+		faceRect = self.rect.copy()
+		faceRect.size = self.faceSize
+		xsign = -1 if self.xflip else 1
+		faceRect.center = (self.rect.center[0]+xsign*self.facePivot[''][0], self.rect.center[1]+self.facePivot[''][1])
+		do = DrawOption(faceRect, self.imgList['face'], self.face)
+		do.pivot = 1
+		do.xflip = self.xflip
 		ImagePack.draw(do)
 
 
@@ -75,9 +95,11 @@ class Player(Sprite):
 			if event.type == pygame.KEYDOWN:
 				# move to left
 				if event.key == K_LEFT:
+					self.xflip = False
 					self.xspeed = -1
 				# move to right
 				elif event.key == K_RIGHT:
+					self.xflip = True
 					self.xspeed = 1
 				# jump
 				elif event.key == K_z:
@@ -93,12 +115,14 @@ class Player(Sprite):
 				# stop moving to left
 				if event.key == K_LEFT:
 					if keys[K_RIGHT]:
+						self.xflip = True
 						self.xspeed = 1
 					else:
 						self.xspeed = 0
 				# stop moving to right
 				elif event.key == K_RIGHT:
 					if keys[K_LEFT]:
+						self.xflip = False
 						self.xspeed = -1
 					else:
 						self.xspeed = 0
@@ -119,3 +143,5 @@ class Player_Superbounce(Player):
 		self.gravity = 0.3 # accelerating vertical speed by gravity
 		self.jumpPower = 10
 		self.name = 'superbounce'
+		self.rect.size = (32, 24)
+		self.facePivot[''] = (-3, 4)

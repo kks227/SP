@@ -42,8 +42,13 @@ class ImagePack:
 
 		img = option.imgList[option.frame].copy()
 
+		# draw center
+		if option.pivot == 0:
+			newRect = option.imgList[0].get_rect()
+			newRect.center = option.rect.center
+			option.rect = newRect
 		# draw bottom center
-		if option.bottomCenter:
+		elif option.pivot == 2:
 			newRect = option.imgList[0].get_rect()
 			newRect.bottom = option.rect.bottom
 			newRect.centerx = option.rect.centerx
@@ -75,7 +80,7 @@ class DrawOption:
 	def __init__(self, rect, imgList, frame=0, fspeed=0):
 		self.rect = rect # essential value: coordinate
 		self.imgList = imgList # essential value: image list
-		self.bottomCenter = False # set balance as bottom center
+		self.pivot = 0 # set balance(0: topleft, 1: center, 2: bottomcenter)
 		self.loop = True # does it loop?
 		self.alpha = 1 # opacity(0: fully transparent, 1: fully opaque)
 		self.xflip = False
