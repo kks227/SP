@@ -11,9 +11,9 @@
 		</types>
 		<boss>0</boss>
 		<move>0</move>
-		<hp>5</hp>
+		<hp>12000</hp>
 		<mp>0</mp>
-		<atk>1</atk>
+		<atk>1000</atk>
 		<def>0</def>
 		<matk>0</matk>
 		<mdef>0</mdef>

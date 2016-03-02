@@ -45,10 +45,13 @@ class Player(Sprite):
 
 
 	def draw(self):
+		alpha = 1 if self.invFrame%4 < 2 else 0.5
+
 		# draw body
 		do = DrawOption(self.rect, self.imgList[''], self.step, 4)
 		do.pivot = 2
 		do.xflip = self.xflip
+		do.alpha = alpha
 		ImagePack.draw(do)
 
 		# draw face
@@ -59,6 +62,7 @@ class Player(Sprite):
 		do = DrawOption(faceRect, self.imgList['face'], self.face)
 		do.pivot = 1
 		do.xflip = self.xflip
+		do.alpha = alpha
 		ImagePack.draw(do)
 
 
@@ -66,7 +70,8 @@ class Player(Sprite):
 	def update(self, enemies, attacksAlly, attacksEnemy, damageText):
 		super(Player, self).update()
 
-		self.updateKeyEvent(attacksAlly, attacksEnemy)
+		if self.actFrame == 0:
+			self.updateKeyEvent(attacksAlly, attacksEnemy)
 
 		# player vertical moving (jump, gravity)
 		if self.status == statusEnum.JUMPED:
@@ -95,6 +100,12 @@ class Player(Sprite):
 		# if both keys of direction are released, set moving speed as 0
 		if not keys[K_LEFT] and not keys[K_RIGHT]:
 			self.xspeed = 0
+		elif keys[K_LEFT] and self.xspeed == 0:
+			self.xflip = False
+			self.xspeed = -self.speed
+		elif keys[K_RIGHT] and self.xspeed == 0:
+			self.xflip = True
+			self.xspeed = self.speed
 
 		# event polling
 		for event in pygame.event.get():
@@ -120,9 +131,20 @@ class Player(Sprite):
 						self.yspeed = -self.jumpPower
 				# attack
 				elif event.key == K_a:
+					self.actFrame = 10
+					self.xspeed = 0
 					x = self.rect.centerx + (1 if self.xflip else -1)*20
 					y = self.rect.centery
-					attacksAlly.append(Attack_Normal(self, x, y, random.randrange(1, 4), 60, 30))
+					attacksAlly.append(Attack_Normal(self, x, y, random.randrange(1, 4), 60, 30, 1, 5, 5))
+				# test: special attack
+				elif event.key == K_x:
+					self.actFrame = 40
+					self.xspeed = 0
+					x = self.rect.centerx + (1 if self.xflip else -1)*20
+					y = self.rect.centery
+					newAttack = Attack_ChainMagic(self, x, y, 5000, 30, 30, 6, 0, 40)
+					newAttack.xflag = self.xflip
+					attacksAlly.append(newAttack)
 			# key up
 			if event.type == pygame.KEYUP:
 				# stop moving to left

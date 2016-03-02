@@ -183,7 +183,10 @@ class Enemy(Sprite):
 			return
 
 		if self.rect.colliderect(player.rect):
+			oATK = self.ATK
+			self.ATK += random.randrange(-200, 201)
 			player.setAttackedByEnemy(self, damageText)
+			self.ATK = oATK
 
 	def updatePostorder(self):
 		super(Enemy, self).updatePostorder()

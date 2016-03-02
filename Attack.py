@@ -1,8 +1,10 @@
+import math
 import random
 import weakref
 
 from Sprite import *
 from ImagePack import *
+from Tool import *
 
 import pygame
 from pygame.locals import *
@@ -23,9 +25,9 @@ class Attack(Sprite):
 		self.parent = parent # whom makes this attack
 		self.ready = ready # ready frames
 		self.act = act # active frames
-		self.active = False # status that gives damage
+		self.active = False if ready > 0 else True # status that gives damage
 		self.expire = False
-		self.remainFrame = self.ready
+		self.remainFrame = self.ready if ready > 0 else act
 		self.target = []
 		# default values
 		self.ATK = ATK
@@ -90,9 +92,12 @@ class Attack(Sprite):
 			if o() is not None and id(o()) == id(oppo):
 				return False
 
+		self.setTargetDirectly(oppo)
+		return True
+
+	def setTargetDirectly(self, oppo):
 		self.targetNum -= 1
 		self.target.append(weakref.ref(oppo))
-		return True
 
 
 
@@ -101,3 +106,114 @@ class Attack_Normal(Attack):
 	def initProperties(self, x, y):
 		self.rect.center = (x, y)
 		self.name = '__rect'
+
+
+
+class Attack_ChainMagic(Attack): # must be ally's
+	def initProperties(self, x, y):
+		self.rect.center = (x, y)
+		# values
+		self.maxDist = 200
+		self.xflag = False # to right if true, otherwise to left
+		# constants
+		self.marginWidth = 12
+		self.outerWidth = 4
+		self.innerWidth = 2
+		self.interval = 2
+		# color constants
+		self.outerColor = (255, 201, 14)
+		self.innerColor = (255, 242, 0)
+		# variables will be used
+		self.intervalFrame = 0
+		self.points = [self.rect.center]
+		self.scratch = [[], []]
+
+	def draw(self):
+		self.drawChainMagic(self.outerWidth, self.outerColor, self.scratch[0], 2)
+		self.drawChainMagic(self.innerWidth, self.innerColor, self.scratch[1], 1)
+
+	def drawChainMagic(self, width, color, chain, cWidth):
+		# draw lines
+		if len(self.points) > 1:
+			pygame.draw.lines(ImagePack.screen.canvas, color, False, self.points, width)
+		# draw circles
+		for p in self.points:
+			pygame.draw.circle(ImagePack.screen.canvas, color, p, width*2)
+		# draw random scratch lines
+		if len(chain) > 1:
+			pygame.draw.lines(ImagePack.screen.canvas, color, False, chain, cWidth)
+
+	def update(self, oppos, damageText):
+		super(Attack, self).update()
+	#	print oppos
+		if self.intervalFrame == 0:
+			self.intervalFrame = self.interval
+			# collision check
+			self.checkCollision(oppos, damageText)
+
+			# renew drawings
+			for li in range(2):
+				self.scratch[li][:] = []
+				self.scratch[li].append(self.rect.center)
+				for i in range(1, len(self.points)):
+					p1 = list(self.points[i-1])
+					p2 = list(self.points[i])
+					t = 0
+					sign = 1
+					d = listSub(p2, p1)
+					n = listNorm([-d[1], d[0]])
+					while True:
+						t += random.uniform(0.03, 0.10)
+						if t >= 1:
+							t = 1
+							self.scratch[li].append(p2)
+							break
+
+						h = random.randrange(self.outerWidth*1.5, self.marginWidth)
+						self.scratch[li].append(listAdd(listAdd(p1, listCoeff(d, t)), listCoeff(n, sign*h)))
+						# renew
+						sign *= -1
+
+		else:
+			self.intervalFrame -= 1
+
+	def checkCollision(self, oppos, damageText):
+		# not active or already has full targets
+		if not self.active or self.expire or self.target == 0:
+			return
+
+		# find nearest and on forward enemy
+		p1 = self.points[-1]
+		index = -1
+		minDist = self.maxDist
+		for i, e in enumerate(oppos):
+			# pass if it is already dead
+			if e.dead:
+				continue
+			# pass if it is already targeted 
+			conFlag = False
+			for t in self.target:
+				if t() is not None and id(t()) == id(e):
+					conFlag = True
+					break
+			if conFlag:
+				continue
+
+			p2 = e.rect.center
+			# pass if it is not on forward
+			if (self.xflag and p1[0] >= p2[0]) or (not self.xflag and p1[0] <= p2[0]):
+				continue
+			dist = math.hypot(p1[0]-p2[0], p1[1]-p2[1])
+			if dist < minDist:
+				minDist = dist
+				index = i
+		#	print i, dist
+
+		# nearest enemy as set target
+		if index != -1:
+			self.setTargetDirectly(oppos[index])
+			oATK = self.ATK
+			self.ATK += random.randrange(-1300, 1301)
+			oppos[index].setAttacked(self, damageText)
+			self.ATK = oATK
+			self.points.append(oppos[index].rect.center)
