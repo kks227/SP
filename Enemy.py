@@ -183,10 +183,7 @@ class Enemy(Sprite):
 			return
 
 		if self.rect.colliderect(player.rect):
-			oATK = self.ATK
-			self.ATK += random.randrange(-200, 201)
 			player.setAttackedByEnemy(self, damageText)
-			self.ATK = oATK
 
 	def updatePostorder(self):
 		super(Enemy, self).updatePostorder()
@@ -200,9 +197,10 @@ class Enemy(Sprite):
 		# set attacked flag
 		self.hit = True
 		# reduce HP
-		self.HP -= aa.ATK
+		damage = max(int(aa.ATK*random.uniform(0.75, 1.25)), 1)
+		self.HP -= damage
 		# make damage text
-		damageText.append(DamageText(self.rect.centerx, self.rect.y, aa.ATK, DamageText.colorEnemy))
+		damageText.append(DamageText(self.rect.centerx, self.rect.y, damage, DamageText.colorEnemy))
 
 		# dead!!
 		if self.HP <= 0:

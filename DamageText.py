@@ -29,7 +29,7 @@ class DamageText:
 
 
 	def __init__(self, cx, cy, val=1, color=(255, 255, 255)):
-		self.val = val
+		self.val = int(val)
 		self.color = color
 		self.remain = DamageText.remain
 

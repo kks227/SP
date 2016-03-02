@@ -176,9 +176,10 @@ class Player(Sprite):
 		self.face = 1
 		self.faceFrame = Player.invFrame
 		# reduce HP
-	#	self.HP -= aa.ATK
+		damage = max(int(enemy.ATK*random.uniform(0.75, 1.25)), 1)
+	#	self.HP -= damage
 		# make damage text
-		damageText.append(DamageText(self.rect.centerx, self.rect.y, enemy.ATK, DamageText.colorAlly))
+		damageText.append(DamageText(self.rect.centerx, self.rect.y, damage, DamageText.colorAlly))
 
 
 

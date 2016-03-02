@@ -184,9 +184,9 @@ class Attack_ChainMagic(Attack): # must be ally's
 
 		# find nearest and on forward enemy
 		p1 = self.points[-1]
-		index = -1
+		newTarget = None
 		minDist = self.maxDist
-		for i, e in enumerate(oppos):
+		for e in oppos:
 			# pass if it is already dead
 			if e.dead:
 				continue
@@ -206,14 +206,10 @@ class Attack_ChainMagic(Attack): # must be ally's
 			dist = math.hypot(p1[0]-p2[0], p1[1]-p2[1])
 			if dist < minDist:
 				minDist = dist
-				index = i
-		#	print i, dist
+				newTarget = e
 
 		# nearest enemy as set target
-		if index != -1:
-			self.setTargetDirectly(oppos[index])
-			oATK = self.ATK
-			self.ATK += random.randrange(-1300, 1301)
-			oppos[index].setAttacked(self, damageText)
-			self.ATK = oATK
-			self.points.append(oppos[index].rect.center)
+		if newTarget is not None:
+			self.setTargetDirectly(newTarget)
+			newTarget.setAttacked(self, damageText)
+			self.points.append(newTarget.rect.center)
