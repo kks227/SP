@@ -8,7 +8,7 @@ from pygame.locals import *
 class DamageText:
 	# general colors
 	colorEnemy = (35, 56, 151)
-	colorAlly = (252, 182, 177)
+	colorAlly = (132, 62, 57)
 	colorRecovery = (181, 230, 29)
 
 	# other static values

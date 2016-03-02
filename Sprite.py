@@ -33,6 +33,8 @@ class Sprite(object):
 		self.collideTerrain = [None]*4
 		self.status = statusEnum.AIR
 		self.step = 0
+		self.xadd = 0 # additional coordinate offset values
+		self.yadd = 0
 		# coordinate and mask(vulnerable area) size
 		self.x = float(x)
 		self.y = float(y)
@@ -40,7 +42,6 @@ class Sprite(object):
 		self.xflip = False # False: leftward, True: rightward
 		# variables that have default values
 		# those can be set on initProperties functions
-		self.speed = 1
 		self.gravity = 0 # accelerating vertical speed by gravity
 		self.jumpPower = 0
 		self.name = name # common perfix of image names
@@ -71,13 +72,14 @@ class Sprite(object):
 
 	def update(self):
 		# sprite horizontal moving
-		self.rect.x += self.xspeed * self.speed
+		self.rect.x += self.xspeed + self.xadd
 		# sprite vertical moving by gravity
-		self.rect.y += self.yspeed
+		self.rect.y += self.yspeed + self.yadd
 
 	def updatePreorder(self):
 		self.prevRect = self.rect.copy()
 		self.collideTerrain = [None]*4
+		self.xadd = self.yadd = 0
 
 	def updatePostorder(self):
 		self.step += 1

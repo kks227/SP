@@ -175,41 +175,46 @@ class Enemy(Sprite):
 			pass
 
 		if not self.dead:
-			self.updateAttacked(attacksAlly, damageText)
+			self.checkCollisionWithPlayer(player, damageText)
 
-	def updateAttacked(self, attacksAlly, damageText):
-		if self.dead:
+	def checkCollisionWithPlayer(self, player, damageText):
+		# player is invincible
+		if player.invFrame > 0:
 			return
 
-		for aa in attacksAlly:
-			if self.rect.colliderect(aa.rect) and aa.setTarget(self):
-				# set attacked flag
-				self.hit = True
-				# reduce HP
-				self.HP -= aa.ATK
-				# make damage text
-				damageText.append(DamageText(self.rect.centerx, self.rect.y, aa.ATK, DamageText.colorEnemy))
-
-				# dead!!
-				if self.HP <= 0:
-					self.HP = 0
-					self.knockback = False
-					self.dead = True
-					self.step = 0
-					self.xspeed = 0
-				# knockback
-				elif aa.ATK >= self.KB:
-					self.knockback = True
-					self.step = 0
-					self.xspeed = 0
-					self.moveStep = 0
-					self.xflip = True if self.rect.centerx < aa.rect.centerx else False
+		if self.rect.colliderect(player.rect):
+			player.setAttackedByEnemy(self, damageText)
 
 	def updatePostorder(self):
 		super(Enemy, self).updatePostorder()
 		# when it doesn't stand on any terrains, go into falling status
 		if self.collideTerrain[0] is None:
 			self.status = statusEnum.AIR
+
+
+
+	def setAttacked(self, aa, damageText):
+		# set attacked flag
+		self.hit = True
+		# reduce HP
+		self.HP -= aa.ATK
+		# make damage text
+		damageText.append(DamageText(self.rect.centerx, self.rect.y, aa.ATK, DamageText.colorEnemy))
+
+		# dead!!
+		if self.HP <= 0:
+			self.HP = 0
+			self.knockback = False
+			self.dead = True
+			self.step = 0
+			self.xspeed = 0
+		# knockback
+		elif aa.ATK >= self.KB:
+			self.knockback = True
+			self.step = 0
+			self.xspeed = 0
+			self.moveStep = 0
+			self.xflip = True if self.rect.centerx < aa.rect.centerx else False
 
 
 

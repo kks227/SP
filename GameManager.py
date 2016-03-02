@@ -157,7 +157,7 @@ class GameManager:
 			atkE.updatePreorder()
 
 		# update functions
-		self.player.update(self.attacksAlly, self.attacksEnemy, self.damageText)
+		self.player.update(self.enemies, self.attacksAlly, self.attacksEnemy, self.damageText)
 
 		for enemy in self.enemies:
 			enemy.update(self.player, self.attacksAlly, self.attacksEnemy, self.damageText)
@@ -174,9 +174,9 @@ class GameManager:
 
 		# update attacks
 		for atkA in self.attacksAlly:
-			atkA.update()
+			atkA.update(self.enemies, self.damageText)
 		for atkE in self.attacksEnemy:
-			atkE.update()
+			atkE.update(self.player, self.damageText)
 		for dt in self.damageText:
 			dt.update()
 

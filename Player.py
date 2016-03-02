@@ -3,6 +3,7 @@ from collections import defaultdict
 
 from Sprite import *
 from Attack import *
+from DamageText import *
 from ImagePack import *
 
 import pygame
@@ -12,6 +13,8 @@ from pygame.locals import *
 
 # player: superclass
 class Player(Sprite):
+	invFrame = 60
+
 	def __init__(self, x=0, y=0, name='__dummy'):
 		# set member variables
 		self.initGenerals(x, y, name)
@@ -24,6 +27,8 @@ class Player(Sprite):
 		self.imgName.append('face')
 		self.facePivot = defaultdict(list)
 		self.face = 0
+		self.faceFrame = 0
+		self.invFrame = 0
 		# default values
 		self.speed = 5
 		self.gravity = 0.3 # accelerating vertical speed by gravity
@@ -58,7 +63,7 @@ class Player(Sprite):
 
 
 
-	def update(self, attacksAlly, attacksEnemy, damageText):
+	def update(self, enemies, attacksAlly, attacksEnemy, damageText):
 		super(Player, self).update()
 
 		self.updateKeyEvent(attacksAlly, attacksEnemy)
@@ -76,6 +81,12 @@ class Player(Sprite):
 
 		if self.actFrame > 0:
 			self.actFrame -= 1
+		if self.faceFrame > 0:
+			self.faceFrame -= 1
+			if self.faceFrame == 0:
+				self.face = 0
+		if self.invFrame > 0:
+			self.invFrame -= 1
 
 	def updateKeyEvent(self, attacksAlly, attacksEnemy):
 		# get pressed keys information
@@ -96,11 +107,11 @@ class Player(Sprite):
 				# move to left
 				if event.key == K_LEFT:
 					self.xflip = False
-					self.xspeed = -1
+					self.xspeed = -self.speed
 				# move to right
 				elif event.key == K_RIGHT:
 					self.xflip = True
-					self.xspeed = 1
+					self.xspeed = self.speed
 				# jump
 				elif event.key == K_z:
 					# only possible when it is on ground
@@ -109,21 +120,23 @@ class Player(Sprite):
 						self.yspeed = -self.jumpPower
 				# attack
 				elif event.key == K_a:
-					attacksAlly.append(Attack_Normal(self, self.rect.x, self.rect.y, random.randrange(1, 4)))
+					x = self.rect.centerx + (1 if self.xflip else -1)*20
+					y = self.rect.centery
+					attacksAlly.append(Attack_Normal(self, x, y, random.randrange(1, 4), 60, 30))
 			# key up
 			if event.type == pygame.KEYUP:
 				# stop moving to left
 				if event.key == K_LEFT:
 					if keys[K_RIGHT]:
 						self.xflip = True
-						self.xspeed = 1
+						self.xspeed = self.speed
 					else:
 						self.xspeed = 0
 				# stop moving to right
 				elif event.key == K_RIGHT:
 					if keys[K_LEFT]:
 						self.xflip = False
-						self.xspeed = -1
+						self.xspeed = -self.speed
 					else:
 						self.xspeed = 0
 
@@ -132,6 +145,18 @@ class Player(Sprite):
 		# when it doesn't stand on any terrains, go into falling status
 		if self.collideTerrain[0] is None:
 			self.status = statusEnum.AIR
+
+
+
+	def setAttackedByEnemy(self, enemy, damageText):
+		# set attacked
+		self.invFrame = Player.invFrame
+		self.face = 1
+		self.faceFrame = Player.invFrame
+		# reduce HP
+	#	self.HP -= aa.ATK
+		# make damage text
+		damageText.append(DamageText(self.rect.centerx, self.rect.y, enemy.ATK, DamageText.colorAlly))
 
 
 
